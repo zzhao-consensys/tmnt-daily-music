@@ -69,14 +69,10 @@ const hourlyJob = schedule.scheduleJob('0 9-17 * * *', () => {
   getRandomSong(true);
 });
 
-app.post('/dailyLyric', (req, res) => {
+app.post('/lyric', (req, res) => {
+  console.log(req);
   res.json({ text: 'Ok. Lyric incoming.' })
-  getRandomSong(false);
-});
-
-app.post('/hourlyLyric', (req, res) => {
-  res.json({ text: 'Ok. Lyric incoming.' })
-  getRandomSong(true);
+  // getRandomSong(false);
 });
 
 app.listen(9216, () => console.log('App listening on port 9216!'))
