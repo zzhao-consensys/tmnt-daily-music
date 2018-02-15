@@ -2,6 +2,7 @@ const schedule = require('node-schedule');
 const axios = require('axios');
 
 const url = 'https://hooks.slack.com/services/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';
+const hourlyUrl = 'https://hooks.slack.com/services/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';
 const config = {
   headers: {
     'Content-Type': 'application/json',
@@ -9,7 +10,7 @@ const config = {
 };
 const proxy = 'http://116.199.115.79:80';
 
-const getRandomSong = () => {
+const getRandomSong = (hourly) => {
   axios.get(`https://zhongwzhao.me:4000/top/playlist/highquality?cat=%E6%AC%A7%E7%BE%8E&proxy=${proxy}`)
     .then((res) => {
       const playlists = res.data.playlists;
@@ -42,13 +43,22 @@ const getRandomSong = () => {
               const lyric = lyrics[Math.floor(Math.random() * lyrics.length)].trim();
               const text = `\`${lyric}\` -- ${songArtists}, _${songName}_`
               console.log(text);
-              axios.post(url, { text, mrkdwn: true }, config);
+              if (hourly) {
+                axios.post(hourlyUrl, { text, mrkdwn: true }, config);
+              } else {
+                axios.post(url, { text, mrkdwn: true }, config);
+              }
             })
         })
     })
 }
 
-const job = schedule.scheduleJob('* * 12 * * *', () => {
+const job = schedule.scheduleJob('0 0 12 * * *', () => {
   console.log('It\'s time for a daily lyric~');
-  getRandomSong();
+  getRandomSong(false);
+});
+
+const hourlyJob = schedule.scheduleJob('0 0 9-17 * * *', () => {
+  console.log('It\'s time for a hourly lyric~');
+  getRandomSong(true);
 });
