@@ -53,12 +53,12 @@ const getRandomSong = (hourly) => {
     })
 }
 
-const job = schedule.scheduleJob('0 0 12 * * *', () => {
+const job = schedule.scheduleJob('0 12 * * *', () => {
   console.log('It\'s time for a daily lyric~');
   getRandomSong(false);
 });
 
-const hourlyJob = schedule.scheduleJob('0 0 9-17 * * *', () => {
+const hourlyJob = schedule.scheduleJob('0 9-17 * * *', () => {
   console.log('It\'s time for a hourly lyric~');
   getRandomSong(true);
 });
