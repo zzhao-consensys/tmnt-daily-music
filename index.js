@@ -1,7 +1,9 @@
 const schedule = require('node-schedule');
 const axios = require('axios');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const url = 'https://hooks.slack.com/services/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';
 const hourlyUrl = 'https://hooks.slack.com/services/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';
@@ -69,10 +71,15 @@ const hourlyJob = schedule.scheduleJob('0 9-17 * * *', () => {
   getRandomSong(true);
 });
 
-app.post('/lyric', (req, res) => {
-  console.log(req);
+app.post('/lyric', urlencodedParser , (req, res) => {
+  const { response_url } = req.body;
   res.json({ text: 'Ok. Lyric incoming.' })
-  // getRandomSong(false);
+  getRandomSong(null, (data) => {
+    axios.post(response_url, {
+      ...data,
+      response_type: 'in_channel',
+    }, config);
+  });
 });
 
 app.listen(9216, () => console.log('App listening on port 9216!'))
